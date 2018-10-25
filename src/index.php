@@ -2,7 +2,7 @@
 /**
  * Include all functions that are required in this file
  */
-require_once 'src/Routing.php';
+require_once 'includes/Routing.php';
 
 ?><!doctype html>
 <html lang="en">
