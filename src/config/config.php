@@ -14,4 +14,4 @@ $default = [
     ]
 ];
 
-return array_merge_recursive($default, $local);
+return array_replace_recursive($default, $local);
