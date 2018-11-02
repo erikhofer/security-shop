@@ -3,6 +3,8 @@
  * Include all functions that are required in this file
  */
 require_once 'includes/Routing.php';
+require_once 'includes/User.php';
+User::startSession();
 
 ?><!doctype html>
 <html lang="en">
@@ -19,7 +21,7 @@ require_once 'includes/Routing.php';
 <body>
 <div class="container" id="main">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Security Shop</a>
+        <a class="navbar-brand" href="<?= Routing::getUrlToSite('home'); ?>">Security Shop</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
