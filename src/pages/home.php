@@ -6,7 +6,7 @@ require_once 'includes/Item.php';
 
 <?php
     if($_POST && isset($_POST["add"]) && isset($_POST["id"])){
-        Item::reduceStock($_POST["id"]);
+        Item::putIntoBasket($_POST["id"]);
     }
 
     foreach(Item::getItems() as $item){
