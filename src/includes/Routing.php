@@ -63,4 +63,15 @@ class Routing
         $query = http_build_query($params);
         return 'index.php?' . $query;
     }
+
+    /**
+     * Redirect user to $site
+     *
+     * @param string $site
+     */
+    public static function redirect($site)
+    {
+        $url = self::getUrlToSite($site);
+        header('Location: ' . $url, true, 301);
+    }
 }

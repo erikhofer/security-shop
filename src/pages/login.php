@@ -11,9 +11,7 @@ if (isset($_POST['submit'])) {
     $user = User::login($_POST['email'], $_POST['password']);
     if ($user !== null) {
         User::startUserSession($user);
-        ?>
-        <div class="alert alert-success">Hello <?= $user['firstname'] ?></div>
-        <?php
+        Routing::redirect('home');
     } else {
         ?>
         <div class="alert alert-danger">That did not work</div>

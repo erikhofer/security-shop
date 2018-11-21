@@ -83,4 +83,9 @@ class User
             $_SESSION['user_id'] = $userData['id'];
         }
     }
+
+    public static function logout()
+    {
+        unset($_SESSION['user_id']);
+    }
 }
