@@ -56,7 +56,7 @@ class User
     public static function startSession()
     {
         session_start();
-        if ($_SESSION['user_id']) {
+        if (self::isLoggedIn()) {
             $user = self::findUserById($_SESSION['user_id']);
             if ($user) {
                 self::startUserSession($user);
@@ -73,7 +73,7 @@ class User
 
     public static function startAnonymousSession()
     {
-
+        unset($_SESSION['user_id']);
     }
 
     public static function startUserSession($userData)

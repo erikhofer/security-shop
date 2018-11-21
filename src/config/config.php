@@ -10,7 +10,7 @@ $default = [
         'host' => '127.0.0.1',
         'user' => 'root',
         'password' => null,
-        'database' => 'mi130'
+        'database' => 'Secure_Webshop'
     ]
 ];
 
