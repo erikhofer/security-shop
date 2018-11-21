@@ -24,6 +24,8 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
+CREATE DATABASE IF NOT EXISTS Secure_Webshop;
+
 --
 -- Table structure for table `basket_positions`
 --
