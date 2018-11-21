@@ -1,5 +1,6 @@
 <?php
     require_once 'DatabaseConnection.php';
+    require_once 'Utils.php';
 
     class Item
     {
@@ -82,7 +83,14 @@
                 }
                 return $success;
             } else {
-                echo "NYI: adding items to basket without logged in user";
+                $basket_id = isset($_COOKIE["basket_id"]) ? $_COOKIE["basket_id"] : Utils::generateRandomToken();
+                if(!isset($_COOKIE["basket_id"])) {
+                    $basket_id = Utils::generateRandomToken();
+                    setcookie("basket_id", $basket_id, time() + (60 * 60 * 24 * 30));
+                } else {
+                    $basket_id = $_COOKIE["basket_id"];
+                }
+                
                 //TODO: implement adding items to basket without logged in user
             }
             
