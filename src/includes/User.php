@@ -7,7 +7,8 @@ class User
     {
         $db = DatabaseConnection::getInstance();
         $stmt = $db->prepare('SELECT * FROM users WHERE id = :id LIMIT 1');
-        $success = $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', (int)$id, PDO::PARAM_INT);
+        $success = $stmt->execute();
         if ($success && $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             return $row;
         }
