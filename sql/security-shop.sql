@@ -2,10 +2,10 @@
 -- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Oct 17, 2018 at 11:48 AM
--- Server version: 10.1.36-MariaDB
--- PHP Version: 7.2.10
+-- Host: 127.0.0.1
+-- Erstellungszeit: 21. Nov 2018 um 10:58
+-- Server-Version: 10.1.36-MariaDB
+-- PHP-Version: 7.2.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,28 +19,33 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `Secure_Webshop`
+-- Datenbank: `security-shop`
 --
+CREATE DATABASE IF NOT EXISTS `security-shop` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `security-shop`;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `basket_positions`
+-- Tabellenstruktur für Tabelle `basket_positions`
 --
 
+DROP TABLE IF EXISTS `basket_positions`;
 CREATE TABLE `basket_positions` (
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `session_id` varchar(255) COLLATE utf8_bin NOT NULL,
-  `user_id` int(11) NOT NULL
+  `basket_id` varchar(255) COLLATE utf8_bin NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order_positions`
+-- Tabellenstruktur für Tabelle `order_positions`
 --
 
+DROP TABLE IF EXISTS `order_positions`;
 CREATE TABLE `order_positions` (
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
@@ -52,9 +57,10 @@ CREATE TABLE `order_positions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `products`
+-- Tabellenstruktur für Tabelle `products`
 --
 
+DROP TABLE IF EXISTS `products`;
 CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -66,9 +72,10 @@ CREATE TABLE `products` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Tabellenstruktur für Tabelle `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `firstname` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -79,45 +86,39 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Indexes for dumped tables
+-- Indizes der exportierten Tabellen
 --
 
 --
--- Indexes for table `basket_positions`
---
-ALTER TABLE `basket_positions`
-  ADD PRIMARY KEY (`product_id`,`session_id`,`user_id`);
-
---
--- Indexes for table `order_positions`
+-- Indizes für die Tabelle `order_positions`
 --
 ALTER TABLE `order_positions`
   ADD PRIMARY KEY (`date`,`user_id`,`product_id`);
 
 --
--- Indexes for table `products`
+-- Indizes für die Tabelle `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `users`
+-- Indizes für die Tabelle `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT für exportierte Tabellen
 --
 
 --
--- AUTO_INCREMENT for table `products`
+-- AUTO_INCREMENT für Tabelle `products`
 --
 ALTER TABLE `products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT für Tabelle `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
