@@ -15,7 +15,8 @@ User::startSession();
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/style.css">
     <title>Security Shop</title>
 </head>
 <body>
@@ -32,15 +33,15 @@ User::startSession();
                     <a class="nav-link" href="<?= Routing::getUrlToSite('home'); ?>">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= Routing::getUrlToSite('login'); ?>">Sign in</a>
+                    <a class="nav-link" href="<?= Routing::getUrlToSite('login'); ?>">Log in</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= Routing::getUrlToSite('register'); ?>">Sign up</a>
+                    <a class="nav-link" href="<?= Routing::getUrlToSite('register'); ?>">Register</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= Routing::getUrlToSite('basket'); ?>">[Basket Icon]</a>
+                    <a class="nav-link" href="<?= Routing::getUrlToSite('basket'); ?>"><i class="fas fa-shopping-cart"></i></a>
                 </li>
             </ul>
         </div>
