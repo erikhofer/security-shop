@@ -26,8 +26,6 @@ USE `security-shop`;
 
 -- --------------------------------------------------------
 
-CREATE DATABASE IF NOT EXISTS Secure_Webshop;
-
 --
 -- Tabellenstruktur für Tabelle `basket_positions`
 --
