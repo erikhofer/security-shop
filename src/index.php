@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 /**
  * Include all functions that are required in this file
  */
@@ -32,14 +35,14 @@ User::startSession();
                 <li class="nav-item active">
                     <a class="nav-link" href="<?= Routing::getUrlToSite('home'); ?>">Home <span class="sr-only">(current)</span></a>
                 </li>
-                <?php if(!User::isLoggedIn()): ?>
+                <?php if (!User::isLoggedIn()) : ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= Routing::getUrlToSite('login'); ?>">Log in</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= Routing::getUrlToSite('register'); ?>">Register</a>
                 </li>
-                <?php else: ?>
+                <?php else : ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= Routing::getUrlToSite('logout'); ?>">Logout</a>
                     </li>
