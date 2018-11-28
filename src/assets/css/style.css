@@ -1,7 +1,19 @@
+h1 {
+  margin-bottom: 1em;
+}
+
 #main {
   margin-top: 3em;
 }
 
 #content {
   padding: 2em;
+}
+
+.card-deck .card {
+  margin-bottom: 30px;
+}
+
+.add-to-basket input[type="number"] {
+  max-width: 5em;
 }
