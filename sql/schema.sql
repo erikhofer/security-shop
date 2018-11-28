@@ -34,7 +34,7 @@ DROP TABLE IF EXISTS `basket_positions`;
 CREATE TABLE `basket_positions` (
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `basket_id` varchar(255) COLLATE utf8_bin NOT NULL,
+  `basket_id` varchar(255) COLLATE utf8_bin NULL,
   `user_id` int(11) DEFAULT NULL,
   `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

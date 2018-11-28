@@ -9,8 +9,8 @@ class User
         $stmt = $db->prepare('SELECT * FROM users WHERE id = :id LIMIT 1');
         $stmt->bindValue(':id', (int)$id, PDO::PARAM_INT);
         $success = $stmt->execute();
-        if ($success && $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            return $row;
+        if ($success && $user = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return $user;
         }
         return null;
     }
@@ -46,10 +46,11 @@ class User
         $success = $stmt->execute([
             ':email' => $email
         ]);
-        if ($success && $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            if (self::comparePassword($password, $row['password'])) {
-                self::rehashPasswordIfNeeded($row, $password);
-                return $row;
+        if ($success && $user = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if (self::comparePassword($password, $user['password'])) {
+                self::rehashPasswordIfNeeded($user, $password);
+                self::attachBasketItemsToUser($user);
+                return $user;
             }
         }
         return null;
@@ -102,5 +103,26 @@ class User
     public static function logout()
     {
         unset($_SESSION['user_id']);
+    }
+
+    public static function attachBasketItemsToUser($user) {
+        if(isset($_COOKIE['basket_id'])) {
+            $user_id = $user['id'];
+            $db = DatabaseConnection::getInstance();
+
+            $stmt = $db->prepare('SELECT * FROM basket_positions WHERE user_id = :user_id');
+            $success = $stmt->execute([
+                'user_id' => $user_id
+            ]);
+            if($success && $stmt->rowCount() === 0) {
+                $basket_id = $_COOKIE['basket_id'];
+
+                $stmt = $db->prepare('UPDATE basket_positions SET user_id = :user_id, basket_id = NULL WHERE basket_id = :basket_id');
+                $success = $stmt->execute([
+                    'user_id' => $user_id,
+                    'basket_id' => $basket_id
+                ]);
+            }
+        }
     }
 }

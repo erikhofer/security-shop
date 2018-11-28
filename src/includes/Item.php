@@ -190,8 +190,7 @@
                         }
                         return false;
                     } else {
-                        echo 'foo';
-                        $stmt = $db->prepare('DELETE * FROM basket_positions WHERE product_id = :id AND basket_id = :basket_id');
+                        $stmt = $db->prepare('DELETE FROM basket_positions WHERE product_id = :id AND basket_id = :basket_id');
                         $success = $stmt->execute([
                             ':id' => $id,
                             ':basket_id' => $basket_id
