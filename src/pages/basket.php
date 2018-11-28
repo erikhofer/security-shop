@@ -20,5 +20,16 @@
             </form>
             <?php
         }
+    } else if(isset($_COOKIE['basket_id'])) {
+        foreach(Item::getBasketItemsByBasket($_COOKIE["basket_id"]) as $item) {
+            echo $item["id"] . ": " . $item["name"] . " (" . $item["quantity"] . ")";
+            ?>
+            <br/>
+            <form action="<?= Routing::getUrlToSite('basket'); ?>" method="post">
+                <button type="submit" name="remove" class="btn btn-primary">-</button>  
+                <input type="hidden" name="id" value="<?php echo $item["id"]; ?>">
+            </form>
+            <?php
+        }
     }
 ?>
