@@ -31,7 +31,7 @@ class User
 
     public static function createPasswordHash($password)
     {
-        return password_hash($password, PASSWORD_BCRYPT);
+        return password_hash($password, PASSWORD_DEFAULT);
     }
 
     public static function comparePassword($password, $hash)
@@ -48,10 +48,25 @@ class User
         ]);
         if ($success && $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             if (self::comparePassword($password, $row['password'])) {
+                self::rehashPasswordIfNeeded($row, $password);
                 return $row;
             }
         }
         return null;
+    }
+
+    private static function rehashPasswordIfNeeded($user, $password)
+    {
+        if (password_needs_rehash($user['password'], PASSWORD_DEFAULT)) {
+            $db = DatabaseConnection::getInstance();
+            $stmt = $db->prepare('UPDATE users SET password = :password WHERE id = :id');
+            $success = $stmt->execute([
+                ':id' => $user['id'],
+                ':password' => self::createPasswordHash($password)
+            ]);
+            return $success && $stmt->rowCount() === 1;
+        }
+        return false;
     }
 
     public static function startSession()
