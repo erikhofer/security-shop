@@ -2,12 +2,14 @@
 
 require_once 'includes/Routing.php';
 require_once 'includes/User.php';
+require_once 'includes/CSRF.php';
 
 ?>
 <h1>Login</h1>
 <?php
 
 if (isset($_POST['submit'])) {
+    CSRF::expectValidTokenInRequest();
     $user = User::login($_POST['email'], $_POST['password']);
     if ($user !== null) {
         User::startUserSession($user);
@@ -30,6 +32,7 @@ if(!User::isLoggedIn()) {
             <label for="password">Password</label>
             <input required type="password" name="password" class="form-control">
         </div>
+        <?= CSRF::getFormField(); ?>
         <button type="submit" name="submit" class="btn btn-primary">Login</button>
     </form>
     <?php
