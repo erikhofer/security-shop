@@ -56,8 +56,8 @@
             return false;
         }
 
-        public static function putIntoBasket($id) {
-            if(!static::reduceStock($id)) {
+        public static function putIntoBasket($id, $amount) {
+            if(!static::reduceStock($id, $amount)) {
                 return false;
             }
 
@@ -70,26 +70,28 @@
                     ':user_id' => $_SESSION["user_id"]
                 ]);
                 if(!$success) {
-                    static::increaseStock($id);
+                    static::increaseStock($id, $amount);
                 } else {
                     if($stmt->rowCount() > 0) {
-                        $stmt = $db->prepare('UPDATE basket_positions SET quantity = (quantity + 1) WHERE product_id = :id AND user_id = :user_id');
+                        $stmt = $db->prepare('UPDATE basket_positions SET quantity = (quantity + :amount) WHERE product_id = :id AND user_id = :user_id');
                         $success = $stmt->execute([
+                            ':amount' => $amount,
                             ':id' => $id,
                             ':user_id' => $_SESSION["user_id"]
                         ]);
                         if(!$success) {
-                            static::increaseStock($id);
+                            static::increaseStock($id, $amount);
                             return false;
                         }
                     } else {
-                        $stmt = $db->prepare('INSERT INTO basket_positions (product_id, quantity, user_id) VALUES (:id, 1, :user_id)');
+                        $stmt = $db->prepare('INSERT INTO basket_positions (product_id, quantity, user_id) VALUES (:id, :amount, :user_id)');
                         $success = $stmt->execute([
                             ':id' => $id,
+                            ':amount' => $amount,
                             ':user_id' => $_SESSION["user_id"]
                         ]);
                         if(!$success) {
-                            static::increaseStock($id);
+                            static::increaseStock($id, $amount);
                             return false;
                         }
                     }
@@ -110,26 +112,28 @@
                     ':basket_id' => $basket_id
                 ]);
                 if(!$success) {
-                    static::increaseStock($id);
+                    static::increaseStock($id, $amount);
                 } else {
                     if($stmt->rowCount() > 0) {
-                        $stmt = $db->prepare('UPDATE basket_positions SET quantity = (quantity + 1) WHERE product_id = :id AND basket_id = :basket_id');
+                        $stmt = $db->prepare('UPDATE basket_positions SET quantity = (quantity + :amount) WHERE product_id = :id AND basket_id = :basket_id');
                         $success = $stmt->execute([
+                            ':amount' => $amount,
                             ':id' => $id,
                             ':basket_id' => $basket_id
                         ]);
                         if(!$success) {
-                            static::increaseStock($id);
+                            static::increaseStock($id, $amount);
                             return false;
                         }
                     } else {
-                        $stmt = $db->prepare('INSERT INTO basket_positions (product_id, quantity, basket_id) VALUES (:id, 1, :basket_id)');
+                        $stmt = $db->prepare('INSERT INTO basket_positions (product_id, quantity, basket_id) VALUES (:id, :amount, :basket_id)');
                         $success = $stmt->execute([
                             ':id' => $id,
+                            ':amount' => $amount,
                             ':basket_id' => $basket_id
                         ]);
                         if(!$success) {
-                            static::increaseStock($id);
+                            static::increaseStock($id, $amount);
                             return false;
                         }
                     }
@@ -156,7 +160,7 @@
                             ':user_id' => $_SESSION["user_id"]
                         ]);
                         if($success) {
-                            static::increaseStock($id);
+                            static::increaseStock($id, 1);
                         }
                         return false;
                     } else {
@@ -166,7 +170,7 @@
                             ':user_id' => $_SESSION["user_id"]
                         ]);
                         if($success) {
-                            static::increaseStock($id);
+                            static::increaseStock($id, 1);
                         }
                         return false;
                     }
@@ -186,7 +190,7 @@
                             ':basket_id' => $basket_id
                         ]);
                         if($success) {
-                            static::increaseStock($id);
+                            static::increaseStock($id, 1);
                         }
                         return false;
                     } else {
@@ -196,7 +200,7 @@
                             ':basket_id' => $basket_id
                         ]);
                         if($success) {
-                            static::increaseStock($id);
+                            static::increaseStock($id, 1);
                         }
                         return false;
                     }
@@ -206,26 +210,25 @@
             }
         }
 
-        public static function reduceStock($id) {
+        public static function reduceStock($id, $amount) {
             $db = DatabaseConnection::getInstance();
-            $stmt = $db->prepare('UPDATE products SET stock = (stock - 1) WHERE id = :id');
-            $success = $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-            if($success) {
-                $success = $stmt->execute();
-                return $success;
-            }
-            return false;
+            $stmt = $db->prepare('UPDATE products SET stock = (stock - :amount) WHERE id = :id');
+            $success = $stmt->execute([
+                ':amount' => $amount,
+                ':id' => $id
+            ]);
+            return $success;
         }
 
-        public static function increaseStock($id) {
+        public static function increaseStock($id, $amount) {
             $db = DatabaseConnection::getInstance();
-            $stmt = $db->prepare('UPDATE products SET stock = (stock + 1) WHERE id = :id');
-            $success = $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-            if($success) {
-                $success = $stmt->execute();
-                return $success;
-            }
-            return false;
+            $stmt = $db->prepare('UPDATE products SET stock = (stock + :amount) WHERE id = :id');
+            $success = $stmt->execute([
+                ':amount' => $amount,
+                ':id' => $id
+            ]);
+            return $success;
+            
         }
     }
 ?>
