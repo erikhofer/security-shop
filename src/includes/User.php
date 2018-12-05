@@ -3,6 +3,15 @@ require_once 'DatabaseConnection.php';
 
 class User
 {
+    public static function getUserData()
+    {
+        static $data;
+        if ($data && $data['id'] === $_SESSION['user_id']) {
+            return $data;
+        }
+        return $data = self::findUserById($_SESSION['user_id']);
+    }
+
     public static function findUserById($id)
     {
         $db = DatabaseConnection::getInstance();

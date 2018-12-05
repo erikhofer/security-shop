@@ -2,11 +2,13 @@
 
 require_once 'includes/Routing.php';
 require_once 'includes/User.php';
+require_once 'includes/CSRF.php';
 ?>
     <h1>Create an account</h1>
 <?php
 
 if (isset($_POST['submit'])) {
+    CSRF::expectValidTokenInRequest();
     $success = User::createUser($_POST);
     if($success) {
         $user = User::login($_POST['email'], $_POST['password']);
@@ -52,6 +54,7 @@ if (isset($_POST['submit'])) {
             <label for="address">Address</label>
             <input required type="text" name="address" class="form-control">
         </div>
+        <?= CSRF::getFormField(); ?>
         <button type="submit" name="submit" class="btn btn-primary">Sign up!</button>
     </form>
     <?php
