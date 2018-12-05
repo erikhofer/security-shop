@@ -13,7 +13,7 @@ class Routing
     {
         // sanitize site name so no files outside of /pages are included
         // this disallows everything except A-z0-9_- characters as filename
-        $site = preg_replace('[^\w\-]+', '', $site);
+        $site = preg_replace('/[^\w\-]+/u', '', $site);
         return __DIR__ . '/../pages/' . $site . '.php';
     }
 
