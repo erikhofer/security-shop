@@ -55,6 +55,7 @@ User::startSession();
             </ul>
         </div>
     </nav>
+    <?php require 'partials/flash_messages.php'; ?>
     <div id="content">
         <?php
         Routing::includeSite(

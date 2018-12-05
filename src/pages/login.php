@@ -3,6 +3,7 @@
 require_once 'includes/Routing.php';
 require_once 'includes/User.php';
 require_once 'includes/CSRF.php';
+require_once 'includes/FlashMessage.php';
 
 ?>
 <h1>Login</h1>
@@ -13,6 +14,7 @@ if (isset($_POST['submit'])) {
     $user = User::login($_POST['email'], $_POST['password']);
     if ($user !== null) {
         User::startUserSession($user);
+        FlashMessage::addMessage('You have been logged in!', FlashMessage::SEVERITY_SUCCESS);
         Routing::redirect('home');
     } else {
         ?>

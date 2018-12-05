@@ -5,6 +5,7 @@ require_once 'includes/CSRF.php';
 if (isset($_POST['submit'])) {
     CSRF::expectValidTokenInRequest();
     User::logout();
+    FlashMessage::addMessage('You have been logged out!', FlashMessage::SEVERITY_SUCCESS);
     Routing::redirect('home');
 }
 ?>
