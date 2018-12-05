@@ -14,6 +14,7 @@ if (isset($_POST['submit'])) {
         $user = User::login($_POST['email'], $_POST['password']);
         if ($user !== null) {
             User::startUserSession($user);
+            FlashMessage::addMessage('You have been successfully registered and are logged in now!', FlashMessage::SEVERITY_SUCCESS);
             Routing::redirect('home');
         } else {
             ?>
