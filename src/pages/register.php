@@ -9,9 +9,15 @@ require_once 'includes/User.php';
 if (isset($_POST['submit'])) {
     $success = User::createUser($_POST);
     if($success) {
-        ?>
-        <div class="alert alert-success">Your account has been created successfuly! You can login now</div>
-        <?php
+        $user = User::login($_POST['email'], $_POST['password']);
+        if ($user !== null) {
+            User::startUserSession($user);
+            Routing::redirect('home');
+        } else {
+            ?>
+            <div class="alert alert-danger">That did not work</div>
+            <?php
+        }
     } else {
         ?>
         <div class="alert alert-danger">Something went wrong :(</div>
