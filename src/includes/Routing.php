@@ -42,6 +42,10 @@ class Routing
      */
     public static function getSiteFromRequest($server, $defaultSite = 'home')
     {
+        if (!isset($server['QUERY_STRING'])) {
+            return $defaultSite;
+        }
+
         parse_str($server['QUERY_STRING'], $query);
         if (isset($query['site'])) {
             return $query['site'];
