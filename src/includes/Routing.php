@@ -12,8 +12,8 @@ class Routing
     public static function getPagesPath($site)
     {
         // sanitize site name so no files outside of /pages are included
-        // only allow A-Z_-
-        $site = preg_replace('[^A-Za-z\-]', '', $site);
+        // this disallows everything except A-z0-9_- characters as filename
+        $site = preg_replace('[^\w\-]+', '', $site);
         return __DIR__ . '/../pages/' . $site . '.php';
     }
 
