@@ -12,20 +12,20 @@ $items = Item::getItems();
 ?>
 <h1>Welcome to the Security Shop!</h1>
 
-<?php for ($i = 0; $i <= (int)(count($items)/3); $i++) : ?>
+<?php for ($i = 0; $i <= (int)(count($items) / 3); $i++) : ?>
 <div class="card-deck">
-    <?php if($i == (int)(count($items)/3)) {
-        $max = count($items)%3;
+    <?php if ($i == (int)(count($items) / 3)) {
+        $max = count($items) % 3;
     } else {
         $max = 3;
     }
-    for ($j = 0; $j < $max; $j++) : $item = $items[$i*3 + $j]; ?>
+    for ($j = 0; $j < $max; $j++) : $item = $items[$i * 3 + $j]; ?>
     <div class="card" style="width: 18rem;">
         <img class="card-img-top" src="assets/img/default.jpg" alt="Card image cap">
         <div class="card-body">
-            <h5 class="card-title"><?php echo $item['name'] . " (Stock: " . $item['stock'] . ")" ?></h5>
+            <h5 class="card-title"><?php echo $item['name'] ?></h5>
             <p class="card-text"><?php echo $item['description'] ?></p>
-            <h3><span class="badge badge-info"><?php echo $item['price']/100 . "€" ?></span></h3>
+            <h3><span class="badge badge-info"><?php echo Utils::formatPrice($item['price']); ?></span></h3>
         </div>
         <div class="card-footer">
             <form class="form-inline add-to-basket" action="<? Routing::getUrlToSite('home'); ?>" method="post">
