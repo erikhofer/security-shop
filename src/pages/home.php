@@ -3,8 +3,9 @@
 require_once 'includes/Item.php';
 
 if ($_POST && isset($_POST["add"]) && isset($_POST["id"]) && isset($_POST["amount"])) {
-    var_dump($_POST["amount"]);
     Item::putIntoBasket($_POST["id"], $_POST["amount"]);
+    Routing::redirect("home");
+    exit;
 }
 
 $items = Item::getItems();
@@ -28,7 +29,7 @@ $items = Item::getItems();
             <h3><span class="badge badge-info"><?php echo Utils::formatPrice($item['price']); ?></span></h3>
         </div>
         <div class="card-footer">
-            <form class="form-inline add-to-basket" action="<? Routing::getUrlToSite('home'); ?>" method="post">
+            <form class="form-inline add-to-basket" action="<?= Routing::getUrlToSite('home'); ?>" method="post">
                 <input type="number" class="form-control mr-sm-2" id="amount" value="1" min="1" name="amount"/>
                 <button type="submit" name="add" class="btn btn-primary"><i class="fas fa-cart-plus"></i> Add to basket</button>
                 <input type="hidden" name="id" value="<?php echo $item['id']; ?>">

@@ -7,7 +7,9 @@ error_reporting(E_ALL);
  */
 require_once 'includes/Routing.php';
 require_once 'includes/User.php';
+require_once 'includes/Item.php';
 User::startSession();
+$basketItems = Item::getBasketItemsForCurrentSession();
 
 ?><!doctype html>
 <html lang="en">
@@ -50,7 +52,8 @@ User::startSession();
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= Routing::getUrlToSite('basket'); ?>"><i class="fas fa-shopping-cart"></i></a>
+                    <a class="nav-link" href="<?= Routing::getUrlToSite('basket'); ?>"><i class="fas fa-shopping-cart"></i> <span class="badge badge-pill badge-primary"><?php if (count($basketItems) > 0) : echo count($basketItems);
+                                                                                                                                                                        endif; ?></span></a>
                 </li>
             </ul>
         </div>
