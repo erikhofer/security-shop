@@ -35,12 +35,8 @@
                 if($success) {
                     return $stmt->fetchall();
                 }
-                return false;
-            } else {
-                echo "NYI: reading items in basket without logged in user";
-                //TODO: implement adding items to basket without logged in user
             }
-            
+            return false;
         }
 
         public static function getBasketItemsByBasket($basket_id) {
@@ -57,10 +53,6 @@
         }
 
         public static function putIntoBasket($id, $amount) {
-            if(!static::reduceStock($id, $amount)) {
-                return false;
-            }
-
             $db = DatabaseConnection::getInstance();
 
             if(isset($_SESSION["user_id"])) {
@@ -70,7 +62,7 @@
                     ':user_id' => $_SESSION["user_id"]
                 ]);
                 if(!$success) {
-                    static::increaseStock($id, $amount);
+                    return false;
                 } else {
                     if($stmt->rowCount() > 0) {
                         $stmt = $db->prepare('UPDATE basket_positions SET quantity = (quantity + :amount) WHERE product_id = :id AND user_id = :user_id');
@@ -80,7 +72,6 @@
                             ':user_id' => $_SESSION["user_id"]
                         ]);
                         if(!$success) {
-                            static::increaseStock($id, $amount);
                             return false;
                         }
                     } else {
@@ -91,7 +82,6 @@
                             ':user_id' => $_SESSION["user_id"]
                         ]);
                         if(!$success) {
-                            static::increaseStock($id, $amount);
                             return false;
                         }
                     }
@@ -112,7 +102,7 @@
                     ':basket_id' => $basket_id
                 ]);
                 if(!$success) {
-                    static::increaseStock($id, $amount);
+                    return false;
                 } else {
                     if($stmt->rowCount() > 0) {
                         $stmt = $db->prepare('UPDATE basket_positions SET quantity = (quantity + :amount) WHERE product_id = :id AND basket_id = :basket_id');
@@ -122,7 +112,6 @@
                             ':basket_id' => $basket_id
                         ]);
                         if(!$success) {
-                            static::increaseStock($id, $amount);
                             return false;
                         }
                     } else {
@@ -133,7 +122,6 @@
                             ':basket_id' => $basket_id
                         ]);
                         if(!$success) {
-                            static::increaseStock($id, $amount);
                             return false;
                         }
                     }
@@ -159,20 +147,14 @@
                             ':id' => $id,
                             ':user_id' => $_SESSION["user_id"]
                         ]);
-                        if($success) {
-                            static::increaseStock($id, 1);
-                        }
-                        return false;
+                        return $success;
                     } else {
                         $stmt = $db->prepare('DELETE * FROM basket_positions WHERE product_id = :id AND user_id = :user_id');
                         $success = $stmt->execute([
                             ':id' => $id,
                             ':user_id' => $_SESSION["user_id"]
                         ]);
-                        if($success) {
-                            static::increaseStock($id, 1);
-                        }
-                        return false;
+                        return $success;
                     }
                 }
             } else if(isset($_COOKIE['basket_id'])) {
@@ -189,24 +171,16 @@
                             ':id' => $id,
                             ':basket_id' => $basket_id
                         ]);
-                        if($success) {
-                            static::increaseStock($id, 1);
-                        }
-                        return false;
+                        return $success;
                     } else {
                         $stmt = $db->prepare('DELETE FROM basket_positions WHERE product_id = :id AND basket_id = :basket_id');
                         $success = $stmt->execute([
                             ':id' => $id,
                             ':basket_id' => $basket_id
                         ]);
-                        if($success) {
-                            static::increaseStock($id, 1);
-                        }
-                        return false;
+                        return $success;
                     }
                 }
-                //echo "NYI: removing items from basket without logged in user";
-                //TODO: implement removing items from basket without logged in user
             }
         }
 
