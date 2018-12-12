@@ -1,9 +1,11 @@
 <?php
 
 require_once 'includes/Item.php';
+require_once 'includes/FlashMessage.php';
 
 if ($_POST && isset($_POST["add"]) && isset($_POST["id"]) && isset($_POST["amount"])) {
     Item::putIntoBasket($_POST["id"], $_POST["amount"]);
+    FlashMessage::addMessage('Product has been added to your basket. <a href="' . Routing::getUrlToSite("checkout") . '">Checkout</a>', FlashMessage::SEVERITY_SUCCESS);
     Routing::redirect("home");
     exit;
 }
