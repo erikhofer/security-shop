@@ -9,7 +9,7 @@ require_once 'includes/Routing.php';
 require_once 'includes/User.php';
 require_once 'includes/Item.php';
 User::startSession();
-$basketItems = Item::getBasketItemsForCurrentSession();
+$basketItemCount = count(Item::getBasketItemsForCurrentSession());
 
 ?><!doctype html>
 <html lang="en">
@@ -52,7 +52,7 @@ $basketItems = Item::getBasketItemsForCurrentSession();
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= Routing::getUrlToSite('basket'); ?>"><i class="fas fa-shopping-cart"></i> <span class="badge badge-pill badge-primary"><?php if (count($basketItems) > 0) : echo count($basketItems);
+                    <a class="nav-link" href="<?= Routing::getUrlToSite('basket'); ?>"><i class="fas fa-shopping-cart"></i> <span class="badge badge-pill badge-primary"><?php if ($basketItemCount > 0) : echo $basketItemCount;
                                                                                                                                                                         endif; ?></span></a>
                 </li>
             </ul>
