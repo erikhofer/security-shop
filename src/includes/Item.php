@@ -142,10 +142,14 @@ class Item
                 }
             }
         }
-
         return false;
     }
 
+    public static function updateBasket($id, $amount)
+    {
+        $db = DatabaseConnection::getInstance();
+        // TODO: implement
+    }
     public static function removeFromBasket($id)
     {
         $db = DatabaseConnection::getInstance();
