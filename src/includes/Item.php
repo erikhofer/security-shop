@@ -184,6 +184,11 @@
             }
         }
 
+        public static function updateBasket($id, $amount) {
+            $db = DatabaseConnection::getInstance();
+            // TODO: implement
+        }
+
         public static function reduceStock($id, $amount) {
             $db = DatabaseConnection::getInstance();
             $stmt = $db->prepare('UPDATE products SET stock = (stock - :amount) WHERE id = :id');
