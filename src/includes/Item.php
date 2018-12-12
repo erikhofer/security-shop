@@ -69,139 +69,75 @@ class Item
     public static function putIntoBasket($id, $amount)
     {
         $db = DatabaseConnection::getInstance();
+        $userContext = self::getUserContext();
 
-        if (isset($_SESSION["user_id"])) {
-            $stmt = $db->prepare('SELECT * FROM basket_positions WHERE product_id = :id AND user_id = :user_id');
-            $success = $stmt->execute([
-                ':id' => $id,
-                ':user_id' => $_SESSION["user_id"]
-            ]);
-            if (!$success) {
-                return false;
-            } else {
-                if ($stmt->rowCount() > 0) {
-                    $stmt = $db->prepare('UPDATE basket_positions SET quantity = (quantity + :amount) WHERE product_id = :id AND user_id = :user_id');
-                    $success = $stmt->execute([
-                        ':amount' => $amount,
-                        ':id' => $id,
-                        ':user_id' => $_SESSION["user_id"]
-                    ]);
-                    if (!$success) {
-                        return false;
-                    }
-                } else {
-                    $stmt = $db->prepare('INSERT INTO basket_positions (product_id, quantity, user_id) VALUES (:id, :amount, :user_id)');
-                    $success = $stmt->execute([
-                        ':id' => $id,
-                        ':amount' => $amount,
-                        ':user_id' => $_SESSION["user_id"]
-                    ]);
-                    if (!$success) {
-                        return false;
-                    }
-                }
-            }
-            return $success;
+        $stmt = $db->prepare(self::createQuery("SELECT * FROM basket_positions WHERE product_id = :id AND %userContext% = :fieldValue"));
+        $success = $stmt->execute([
+            ':id' => $id,
+            ':fieldValue' => $userContext
+        ]);
+        if(!$success) {
+            return false;
         } else {
-            $basket_id = isset($_COOKIE["basket_id"]) ? $_COOKIE["basket_id"] : Utils::generateRandomToken();
-            if (!isset($_COOKIE["basket_id"])) {
-                $basket_id = Utils::generateRandomToken();
-                setcookie("basket_id", $basket_id, time() + (60 * 60 * 24 * 30));
+            if($stmt->rowCount() > 0) {
+                $stmt = $db->prepare(self::createQuery('UPDATE basket_positions SET quantity = (quantity + :amount) WHERE product_id = :id AND %userContext% = :fieldValue'));
+                $success = $stmt->execute([
+                    ':amount' => $amount,
+                    ':id' => $id,
+                    ':fieldValue' => $userContext
+                ]);
+                if(!$success) {
+                    return false;
+                }
             } else {
-                $basket_id = $_COOKIE["basket_id"];
-            }
-
-            $stmt = $db->prepare('SELECT * FROM basket_positions WHERE product_id = :id AND basket_id = :basket_id');
-            $success = $stmt->execute([
-                ':id' => $id,
-                ':basket_id' => $basket_id
-            ]);
-            if (!$success) {
-                return false;
-            } else {
-                if ($stmt->rowCount() > 0) {
-                    $stmt = $db->prepare('UPDATE basket_positions SET quantity = (quantity + :amount) WHERE product_id = :id AND basket_id = :basket_id');
-                    $success = $stmt->execute([
-                        ':amount' => $amount,
-                        ':id' => $id,
-                        ':basket_id' => $basket_id
-                    ]);
-                    if (!$success) {
-                        return false;
-                    }
-                } else {
-                    $stmt = $db->prepare('INSERT INTO basket_positions (product_id, quantity, basket_id) VALUES (:id, :amount, :basket_id)');
-                    $success = $stmt->execute([
-                        ':id' => $id,
-                        ':amount' => $amount,
-                        ':basket_id' => $basket_id
-                    ]);
-                    if (!$success) {
-                        return false;
-                    }
+                $stmt = $db->prepare(self::createQuery('INSERT INTO basket_positions (product_id, quantity, %userContext%) VALUES (:id, :amount, :fieldValue)'));
+                $success = $stmt->execute([
+                    ':id' => $id,
+                    ':amount' => $amount,
+                    ':fieldValue' => $userContext
+                ]);
+                if(!$success) {
+                    return false;
                 }
             }
         }
-        return false;
+    }
+
+    private static function createQuery($query) {
+        return str_replace("%userContext%", isset($_SESSION["user_id"]) ? "user_id" : "basket_id", $query);
     }
 
     public static function updateBasket($id, $amount)
     {
         $db = DatabaseConnection::getInstance();
-        // TODO: implement
+        $stmt = $db->prepare(self::createQuery("UPDATE basket_positions SET quantity = :quantity WHERE product_id = :id AND %userContext% = :fieldValue"));
+
+        $success = $stmt->execute([
+            ':quantity' => $amount,
+            ':id' => $id,
+            ':fieldValue' => self::getUserContext()
+        ]);
+        return $success;
     }
+
+    public static function getUserContext() {
+        if(isset($_SESSION["user_id"])) {
+            return $_SESSION["user_id"];
+        } else {
+            return isset($_COOKIE["basket_id"]) ? $_COOKIE["basket_id"] : Utils::generateRandomToken();
+        }
+    }
+
     public static function removeFromBasket($id)
     {
         $db = DatabaseConnection::getInstance();
 
-        if (isset($_SESSION["user_id"])) {
-            $stmt = $db->prepare('SELECT * FROM basket_positions WHERE product_id = :id AND user_id = :user_id');
-            $success = $stmt->execute([
-                ':id' => $id,
-                ':user_id' => $_SESSION["user_id"]
-            ]);
-            if ($success && $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                if ($row["quantity"] > 1) {
-                    $stmt = $db->prepare('UPDATE basket_positions SET quantity = (quantity - 1) WHERE product_id = :id AND user_id = :user_id');
-                    $success = $stmt->execute([
-                        ':id' => $id,
-                        ':user_id' => $_SESSION["user_id"]
-                    ]);
-                    return $success;
-                } else {
-                    $stmt = $db->prepare('DELETE * FROM basket_positions WHERE product_id = :id AND user_id = :user_id');
-                    $success = $stmt->execute([
-                        ':id' => $id,
-                        ':user_id' => $_SESSION["user_id"]
-                    ]);
-                    return $success;
-                }
-            }
-        } else if (isset($_COOKIE['basket_id'])) {
-            $basket_id = $_COOKIE['basket_id'];
-            $stmt = $db->prepare('SELECT * FROM basket_positions WHERE product_id = :id AND basket_id = :basket_id');
-            $success = $stmt->execute([
-                ':id' => $id,
-                ':basket_id' => $basket_id
-            ]);
-            if ($success && $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                if ($row["quantity"] > 1) {
-                    $stmt = $db->prepare('UPDATE basket_positions SET quantity = (quantity - 1) WHERE product_id = :id AND basket_id = :basket_id');
-                    $success = $stmt->execute([
-                        ':id' => $id,
-                        ':basket_id' => $basket_id
-                    ]);
-                    return $success;
-                } else {
-                    $stmt = $db->prepare('DELETE FROM basket_positions WHERE product_id = :id AND basket_id = :basket_id');
-                    $success = $stmt->execute([
-                        ':id' => $id,
-                        ':basket_id' => $basket_id
-                    ]);
-                    return $success;
-                }
-            }
-        }
+        $stmt = $db->prepare(self::createQuery('DELETE FROM basket_positions WHERE product_id = :id AND %userContext% = :fieldValue'));
+        $success = $stmt->execute([
+            ':id' => $id,
+            ':fieldValue' => self::getUserContext()
+        ]);
+        return $success;
     }
 
     public static function reduceStock($id, $amount)
