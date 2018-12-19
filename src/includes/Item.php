@@ -124,7 +124,13 @@ class Item
         if(isset($_SESSION["user_id"])) {
             return $_SESSION["user_id"];
         } else {
-            return isset($_COOKIE["basket_id"]) ? $_COOKIE["basket_id"] : Utils::generateRandomToken();
+            if(isset($_COOKIE["basket_id"])) {
+                return $_COOKIE["basket_id"];
+            } else {
+                $id = Utils::generateRandomToken();
+                setcookie("basket_id", $id);
+                return $id;
+            }
         }
     }
 
