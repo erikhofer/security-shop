@@ -1,6 +1,7 @@
 <?php
 require_once 'DatabaseConnection.php';
 require_once 'Utils.php';
+require_once 'Checkout.php';
 
 class Item
 {
@@ -76,17 +77,18 @@ class Item
             ':id' => $id,
             ':fieldValue' => $userContext
         ]);
-        if(!$success) {
+        if (!$success) {
             return false;
         } else {
-            if($stmt->rowCount() > 0) {
+            Checkout::reset();
+            if ($stmt->rowCount() > 0) {
                 $stmt = $db->prepare(self::createQuery('UPDATE basket_positions SET quantity = (quantity + :amount) WHERE product_id = :id AND %userContext% = :fieldValue'));
                 $success = $stmt->execute([
                     ':amount' => $amount,
                     ':id' => $id,
                     ':fieldValue' => $userContext
                 ]);
-                if(!$success) {
+                if (!$success) {
                     return false;
                 }
             } else {
@@ -96,14 +98,15 @@ class Item
                     ':amount' => $amount,
                     ':fieldValue' => $userContext
                 ]);
-                if(!$success) {
+                if (!$success) {
                     return false;
                 }
             }
         }
     }
 
-    private static function createQuery($query) {
+    private static function createQuery($query)
+    {
         return str_replace("%userContext%", isset($_SESSION["user_id"]) ? "user_id" : "basket_id", $query);
     }
 
@@ -117,14 +120,18 @@ class Item
             ':id' => $id,
             ':fieldValue' => self::getUserContext()
         ]);
+        if ($sucess) {
+            Checkout::reset();
+        }
         return $success;
     }
 
-    public static function getUserContext() {
-        if(isset($_SESSION["user_id"])) {
+    public static function getUserContext()
+    {
+        if (isset($_SESSION["user_id"])) {
             return $_SESSION["user_id"];
         } else {
-            if(isset($_COOKIE["basket_id"])) {
+            if (isset($_COOKIE["basket_id"])) {
                 return $_COOKIE["basket_id"];
             } else {
                 $id = Utils::generateRandomToken();
@@ -143,6 +150,9 @@ class Item
             ':id' => $id,
             ':fieldValue' => self::getUserContext()
         ]);
+        if ($success) {
+            Checkout::reset();
+        }
         return $success;
     }
 
