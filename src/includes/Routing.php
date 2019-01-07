@@ -77,5 +77,6 @@ class Routing
     {
         $url = self::getUrlToSite($site);
         header('Location: ' . $url, true, 301);
+        exit;
     }
 }

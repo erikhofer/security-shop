@@ -1,5 +1,6 @@
 <?php
 require_once 'DatabaseConnection.php';
+require_once 'Checkout.php';
 
 class User
 {
@@ -59,6 +60,9 @@ class User
             if (self::comparePassword($password, $user['password'])) {
                 self::rehashPasswordIfNeeded($user, $password);
                 self::attachBasketItemsToUser($user);
+                session_regenerate_id();
+                self::startUserSession($user);
+                Checkout::reset();
                 return $user;
             }
         }
@@ -104,9 +108,7 @@ class User
 
     public static function startUserSession($userData)
     {
-        if (!self::isLoggedIn()) {
-            $_SESSION['user_id'] = $userData['id'];
-        }
+        $_SESSION['user_id'] = $userData['id'];
     }
 
     public static function logout()

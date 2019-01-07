@@ -10,4 +10,9 @@ class Utils
     {
         return number_format($price / 100, 2) . " €";
     }
+
+    public static function escapeHtml($str)
+    {
+        return htmlspecialchars($str, ENT_QUOTES);
+    }
 }
