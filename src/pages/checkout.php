@@ -186,7 +186,7 @@ $(() => {
 <form action="<?= Routing::getUrlToSite('checkout'); ?>" method="post">
 <table>
 <h2>Shipping Adress<h2>
-<tr><td></td><td><?= $data['address'] ?></td></tr>
+<tr><td></td><td><?= Utils::escapeHtml($data['address']) ?></td></tr>
 </table>
 
 <?php
@@ -194,12 +194,12 @@ if(isset($data['creditCardInstitute'])) {
 ?>
     <h2>Credit card information</h2>
     <table>
-    <tr><td>Credit card institute: </td><td><?= $data['creditCardInstitute'] ?></td></tr>
-    <tr><td>Name on Card: </td><td><?= $data['cardname'] ?></td></tr>
-    <tr><td>Credit card number: </td><td><?= $data['cardnumber'] ?></td></tr>
-    <tr><td>Exp Month: </td><td><?= $data['expmonth'] ?></td></tr>
-    <tr><td>Exp Year: </td><td><?= $data['expyear'] ?></td></tr>
-    <tr><td>CVV: </td><td><?= $data['cvv'] ?></td></tr>
+    <tr><td>Credit card institute: </td><td><?= Utils::escapeHtml($data['creditCardInstitute']) ?></td></tr>
+    <tr><td>Name on Card: </td><td><?= Utils::escapeHtml($data['cardname']) ?></td></tr>
+    <tr><td>Credit card number: </td><td><?= Utils::escapeHtml($data['cardnumber']) ?></td></tr>
+    <tr><td>Exp Month: </td><td><?= Utils::escapeHtml($data['expmonth']) ?></td></tr>
+    <tr><td>Exp Year: </td><td><?= Utils::escapeHtml($data['expyear']) ?></td></tr>
+    <tr><td>CVV: </td><td><?= Utils::escapeHtml($data['cvv']) ?></td></tr>
     </table>
 <?php
 } elseif(isset($data['payment_method']) && $data['payment_method'] == 'paypal') {
