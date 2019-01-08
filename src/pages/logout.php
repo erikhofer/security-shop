@@ -9,7 +9,7 @@ if (isset($_POST['submit'])) {
     Routing::redirect('home');
 }
 ?>
-<h1>Hello, <?= User::getUserData()['firstname'] ?>!</h1>
+<h1>Do you really want to leave the security shop?</h1>
 <form action="<?= Routing::getUrlToSite('logout'); ?>" method="post">
     <?= CSRF::getFormField(); ?>
     <button type="submit" name="submit" class="btn btn-warning">Logout</button>
