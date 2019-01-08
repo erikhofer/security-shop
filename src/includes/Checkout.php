@@ -23,7 +23,7 @@ class Checkout
         $_SESSION[self::SESSION_FIELD] = $data;
     }
 
-    static function placeOrder() {
+    static function placeOrder($payment_method = null) {
         $data = self::getData();
         $user_id = User::getUserData()['id'];
         $items = Item::getBasketItemsForCurrentSession();
@@ -36,12 +36,12 @@ class Checkout
         }
 
         $db = DatabaseConnection::getInstance();
-        if(isset($data['creditCardInstitute'])) {
+        if($payment_method == null && isset($data['creditCardInstitute'])) {
             $institute = $data['creditCardInstitute'];
             $number = $data['cardnumber'];
             $payment = $institute . " *" . substr($number, -3);
         } else {
-            $payment = $data['creditCardInstitute'];
+            $payment = $payment_method;
             // additional payment methods could be handled here
         }
         

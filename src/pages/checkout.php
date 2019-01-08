@@ -107,6 +107,15 @@ if (isset($_POST['submit'])) {
             $data['step']--;
             Checkout::setData($data);
         }
+    } elseif($_POST['submit'] === 'paypal') {
+        $placeOrder = Checkout::placeOrder('paypal');
+        if ($placeOrder == null) {
+            FlashMessage::addMessage('Your order has successfully been placed!', FlashMessage::SEVERITY_SUCCESS);
+        } else {
+            FlashMessage::addMessage('Your order could not be placed. Error: ' . $placeOrder, FlashMessage::SEVERITY_ERROR);
+        }
+        Checkout::reset();
+        Routing::redirect('home');
     }
 }
 if ($data['step'] === Checkout::STEP_ADDRESS) :
@@ -136,6 +145,8 @@ $(() => {
 <?php elseif ($data['step'] === Checkout::STEP_PAYMENT) : ?>
 
 <form action="<?= Routing::getUrlToSite('checkout'); ?>" method="post">
+    <button type="submit" name="submit" value="paypal" class="btn btn-primary">Pay with PayPal</button>
+    <hr>
     <h2>Credit card</h2>
     <div class="form-group">
         <label><input type="radio" name="creditCardInstitute" value="Mastercard" class="form-control"> Mastercard</Label><br>
@@ -151,6 +162,7 @@ $(() => {
         <label for="cvv">CVV</label>
         <input type="text" id="cvv" name="cvv" placeholder="352" class="form-control">
     </div>
+    <hr>
     <?= CSRF::getFormField();
     getSubmitButtons($data['step']); ?>
 </form>
