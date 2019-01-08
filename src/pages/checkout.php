@@ -178,22 +178,21 @@ $(() => {
 
 <h2>Order</h2>
 <table>
-<tr><th>Product</th><th>Amount</th><th>Price</th></tr>
 <?php
 
 $basketItems = Item::getBasketItemsForCurrentSession();
+$totalPrice = 0;
 
 if (count($basketItems) > 0) :
     foreach ($basketItems as $item) :
-    echo $item["id"] . ": " . $item["name"] . " (" . $item["quantity"] . ")";
+    echo $item["id"] . ": " . $item["name"] . " (" . $item["quantity"] . ")" . " = " . Utils::formatPrice(Item::getPrice($item['id'])) . " unit price";
+$totalPrice += ($item['quantity'] * Item::getPrice($item['id']))
 ?>
     <br/>
-    <form action="<?= Routing::getUrlToSite('basket'); ?>" method="post">
-        <input type="number" class="form-control mr-sm-2" id="amount" value="<?php echo $item["quantity"] ?>" min="1" name="amount" readonly/>
-    </form>
 <?php
 endforeach;
 ?>
+<p> Total price = <?= Utils::formatPrice($totalPrice) ?></p>
 <?php 
 endif;
 ?>
