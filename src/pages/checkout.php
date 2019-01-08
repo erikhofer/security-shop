@@ -9,7 +9,7 @@ function getSubmitButtons($step)
 {
     ?>
 <button type="submit" name="submit" value="back" class="btn btn-default"><?= $step === 0 ? 'Cancel' : 'Back' ?></button>
-<button type="submit" name="submit" value="continue" class="btn btn-primary"><?= $step === 2 ? 'Checkout' : 'Continue' ?></button>
+<button type="submit" name="submit" value="continue" class="btn btn-primary"><?= $step === 2 ? 'Place Order' : 'Continue' ?></button>
 <?php
 
 }
@@ -85,7 +85,14 @@ if (isset($_POST['submit'])) {
             }
 
         } elseif ($data['step'] === Checkout::STEP_CONFIRM) {
-
+            $placeOrder = Checkout::placeOrder();
+            if($placeOrder == null) {
+                FlashMessage::addMessage('Your order has successfully been placed!', FlashMessage::SEVERITY_SUCCESS);
+            } else {
+                FlashMessage::addMessage('Your order could not be placed. Error: ' . $placeOrder, FlashMessage::SEVERITY_ERROR);
+            }
+            Checkout::reset();
+            Routing::redirect('home');                     
         }
     } elseif ($_POST['submit'] === 'back') {
         if ($data['step'] === 0) {

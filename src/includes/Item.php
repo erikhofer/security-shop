@@ -178,5 +178,30 @@ class Item
         return $success;
 
     }
+
+    public static function getStock($id) 
+    {
+        $db = DatabaseConnection::getInstance();
+        $stmt = $db->prepare('SELECT stock FROM products WHERE id = :id LIMIT 1');
+        $success = $stmt->execute([
+            ':id' => $id
+        ]);
+        if ($success && $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return $row['stock'];
+        }
+        return null;
+    }
+
+    public static function getPrice($id) {
+        $db = DatabaseConnection::getInstance();
+        $stmt = $db->prepare('SELECT price FROM products WHERE id = :id LIMIT 1');
+        $success = $stmt->execute([
+            ':id' => $id
+        ]);
+        if($success && $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return $row['price'];
+        }
+        return null;
+    }
 }
 ?>
