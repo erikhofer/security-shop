@@ -90,7 +90,7 @@ if (isset($_POST['submit'])) {
             }
 
         } elseif ($data['step'] === Checkout::STEP_CONFIRM) {
-            $placeOrder = Checkout::placeOrder();
+            $placeOrder = Checkout::placeOrder($data['payment_method']);
             if ($placeOrder == null) {
                 FlashMessage::addMessage('Your order has successfully been placed!', FlashMessage::SEVERITY_SUCCESS);
             } else {
@@ -108,14 +108,13 @@ if (isset($_POST['submit'])) {
             Checkout::setData($data);
         }
     } elseif($_POST['submit'] === 'paypal') {
-        $placeOrder = Checkout::placeOrder('paypal');
-        if ($placeOrder == null) {
-            FlashMessage::addMessage('Your order has successfully been placed!', FlashMessage::SEVERITY_SUCCESS);
+        $data['payment_method'] = 'paypal';
+        if(FlashMessage::hasMessages()) {
+            Routing::redirect('checkout');
         } else {
-            FlashMessage::addMessage('Your order could not be placed. Error: ' . $placeOrder, FlashMessage::SEVERITY_ERROR);
+            $data['step'] = Checkout::STEP_CONFIRM;
+            Checkout::setData($data);
         }
-        Checkout::reset();
-        Routing::redirect('home');
     }
 }
 if ($data['step'] === Checkout::STEP_ADDRESS) :
@@ -178,15 +177,25 @@ $(() => {
 <tr><td></td><td><?= $data['address'] ?></td></tr>
 </table>
 
-<h2>Credit card information</h2>
-<table>
-<tr><td>Credit card institute: </td><td><?= $data['creditCardInstitute'] ?></td></tr>
-<tr><td>Name on Card: </td><td><?= $data['cardname'] ?></td></tr>
-<tr><td>Credit card number: </td><td><?= $data['cardnumber'] ?></td></tr>
-<tr><td>Exp Month: </td><td><?= $data['expmonth'] ?></td></tr>
-<tr><td>Exp Year: </td><td><?= $data['expyear'] ?></td></tr>
-<tr><td>CVV: </td><td><?= $data['cvv'] ?></td></tr>
-</table>
+<?php
+if(isset($data['creditCardInstitute'])) {
+?>
+    <h2>Credit card information</h2>
+    <table>
+    <tr><td>Credit card institute: </td><td><?= $data['creditCardInstitute'] ?></td></tr>
+    <tr><td>Name on Card: </td><td><?= $data['cardname'] ?></td></tr>
+    <tr><td>Credit card number: </td><td><?= $data['cardnumber'] ?></td></tr>
+    <tr><td>Exp Month: </td><td><?= $data['expmonth'] ?></td></tr>
+    <tr><td>Exp Year: </td><td><?= $data['expyear'] ?></td></tr>
+    <tr><td>CVV: </td><td><?= $data['cvv'] ?></td></tr>
+    </table>
+<?php
+} elseif(isset($data['payment_method']) && $data['payment_method'] == 'paypal') {
+?>
+    <h2>Payment Method: PayPal</h2>
+<?php
+}
+?>
 
 <h2>Order</h2>
 <table>
