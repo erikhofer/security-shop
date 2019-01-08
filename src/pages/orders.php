@@ -4,10 +4,12 @@
 ?>
 
 <h1>My Orders</h1>
-<a href="javascript:window.print();">Print</a>
+<div class="text-right">
+    <a class="btn btn-primary" href="javascript:window.print();">Print</a>
+</div>
 <hr>
 
-<?php 
+<?php
     $user = User::getUserData();
 
     if ($user === null) {
@@ -21,25 +23,47 @@
     } else {
         foreach($orders as $order) {
             $orderData = Order::getOrderData($order['id']);
+            $totalPrice = 0;
             ?>
-                <table>
-                    <tr><td>Date: </td><td><?= $order['date'] ?></td></tr>
-                    <tr><td>Address: </td><td><?= $order['address'] ?></td></tr>
-                    <tr><td>Payment Method: </td><td><?= $order['payment_method'] ?></td></tr>
-                </table>
-                <br>
-            <?php
-            foreach($orderData as $data) {
-                ?>
-                <table>
-                    <tr><td>Product Name: </td><td><?= Item::getName($data['product_id']) ?></td></tr>
-                    <tr><td>Quantity: </td><td><?= $data['quantity'] ?></td></tr>
-                    <tr><td>Price: </td><td><?= $data['price'] ?></td></tr>
-                </table>
-                <br>
+            <dl>
+                <dt>Date</dt>
+                <dd><?= $order['date'] ?></dd>
+                <dt>Address</dt>
+                <dd><?= $order['address'] ?></dd>
+                <dt>Payment Method</dt>
+                <dd><?= $order['payment_method'] ?></dd>
+            </dl>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>qty</th>
+                    <th>price</th>
+                    <th>total</th>
+                </tr>
+                </thead>
+                <tbody>
                 <?php
-            }
-            ?>
+                foreach ($orderData as $item):
+                    ?>
+                    <tr>
+                        <td><?= $item['product_id']; ?></td>
+                        <td><?= Item::getName($item['product_id']) ?></td>
+                        <td><?= $item['quantity']; ?></td>
+                        <td><?= Utils::formatPrice($item['price']); ?></td>
+                        <td><?= Utils::formatPrice($item['price'] * $item['quantity']); ?></td>
+                    </tr>
+                    <?php
+                    $totalPrice += ($item['quantity'] * $item['price']);
+                endforeach;
+                ?>
+                <tr>
+                    <td colspan="4"></td>
+                    <td class="font-weight-bold"><?= Utils::formatPrice($totalPrice) ?></td>
+                </tr>
+                </tbody>
+            </table>
             <hr>
             <?php
         }

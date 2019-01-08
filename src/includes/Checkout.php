@@ -44,7 +44,7 @@ class Checkout
             $payment = $payment_method;
             // additional payment methods could be handled here
         }
-        
+
         $stmt = $db->prepare('INSERT INTO orders (user_id, address, payment_method, date) VALUES (:user_id, :address, :payment, :date)');
         $success = $stmt->execute([
             ':user_id' => $user_id,

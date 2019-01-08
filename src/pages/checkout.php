@@ -148,16 +148,28 @@ $(() => {
     <hr>
     <h2>Credit card</h2>
     <div class="form-group">
-        <label><input type="radio" name="creditCardInstitute" value="Mastercard" class="form-control"> Mastercard</Label><br>
-        <label><input type="radio" name="creditCardInstitute" value="Visa"class="form-control"> Visa card    </Label><br>
+        <div class="form-check">
+            <input type="radio" id="mastercard" name="creditCardInstitute" value="Mastercard" class="form-check-input"><label for="mastercard" class="form-check-label">Mastercard</Label><br>
+            <input type="radio" id="visa" name="creditCardInstitute" value="Visa" class="form-check-input"><label for="visa" class="form-check-label" for>Visa card</Label><br>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="cname">Name on Card</label>
         <input type="text" id="cname" name="cardname" placeholder="John More Doe" class="form-control">
+    </div>
+    <div class="form-group">
         <label for="ccnum">Credit card number</label>
         <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444" class="form-control">
+    </div>
+    <div class="form-group">
         <label for="expmonth">Exp Month</label>
         <input type="text" id="expmonth" name="expmonth" placeholder="September" class="form-control">
+    </div>
+    <div class="form-group">
         <label for="expyear">Exp Year</label>
         <input type="text" id="expyear" name="expyear" placeholder="2018" class="form-control">
+    </div>
+    <div class="form-group">
         <label for="cvv">CVV</label>
         <input type="text" id="cvv" name="cvv" placeholder="352" class="form-control">
     </div>
@@ -197,26 +209,41 @@ if(isset($data['creditCardInstitute'])) {
 }
 ?>
 
-<h2>Order</h2>
-<table>
 <?php
-
 $basketItems = Item::getBasketItemsForCurrentSession();
 $totalPrice = 0;
-
-if (count($basketItems) > 0) :
-    foreach ($basketItems as $item) :
-    echo $item["id"] . ": " . $item["name"] . " (" . $item["quantity"] . ")" . " = " . Utils::formatPrice(Item::getPrice($item['id'])) . " unit price";
-$totalPrice += ($item['quantity'] * Item::getPrice($item['id']))
 ?>
-    <br/>
-<?php
-endforeach;
-?>
-<p> Total price = <?= Utils::formatPrice($totalPrice) ?></p>
-<?php 
-endif;
-?>
+<h2>Order</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>qty</th>
+            <th>price</th>
+            <th>total</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php
+    foreach ($basketItems as $item):
+        ?>
+    <tr>
+        <td><?= $item['id']; ?></td>
+        <td><?= $item['name']; ?></td>
+        <td><?= $item['quantity']; ?></td>
+        <td><?= Utils::formatPrice(Item::getPrice($item['id'])); ?></td>
+        <td><?= Utils::formatPrice(Item::getPrice($item['id']) * $item['quantity']); ?></td>
+    </tr>
+    <?php
+        $totalPrice += ($item['quantity'] * Item::getPrice($item['id']));
+    endforeach;
+    ?>
+    <tr>
+        <td colspan="4"></td>
+        <td class="font-weight-bold"><?= Utils::formatPrice($totalPrice) ?></td>
+    </tr>
+    </tbody>
 </table>
 <?= CSRF::getFormField();
 getSubmitButtons($data['step']); ?>
