@@ -76,12 +76,7 @@ CREATE TABLE `orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `address` varchar(255) COLLATE utf8_bin NOT NULL,
-  `credit_card_institute` varchar(255) COLLATE utf8_bin NOT NULL,
-  `card_name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `card_number` varchar(255) COLLATE utf8_bin NOT NULL,
-  `card_expmonth` varchar(255) COLLATE utf8_bin NOT NULL,
-  `card_expyear` varchar(255) COLLATE utf8_bin NOT NULL,
-  `cvv` varchar(255) COLLATE utf8_bin NOT NULL,
+  `payment_method` varchar(255) COLLATE utf8_bin NOT NULL,
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

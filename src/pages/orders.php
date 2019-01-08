@@ -25,7 +25,7 @@
                 <table>
                     <tr><td>Date: </td><td><?= $order['date'] ?></td></tr>
                     <tr><td>Address: </td><td><?= $order['address'] ?></td></tr>
-                    <tr><td>Credit Card Institute: </td><td><?= $order['credit_card_institute'] ?></td></tr>
+                    <tr><td>Payment Method: </td><td><?= $order['payment_method'] ?></td></tr>
                 </table>
                 <br>
             <?php

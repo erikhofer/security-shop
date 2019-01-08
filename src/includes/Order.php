@@ -7,7 +7,7 @@ class Order
         $db = DatabaseConnection::getInstance();
 
         if (isset($_SESSION["user_id"])) {
-            $stmt = $db->prepare('SELECT id, address, credit_card_institute, date FROM orders WHERE user_id = :user_id');
+            $stmt = $db->prepare('SELECT id, address, payment_method, date FROM orders WHERE user_id = :user_id');
             $success = $stmt->execute([
                 ':user_id' => $_SESSION["user_id"]
             ]);

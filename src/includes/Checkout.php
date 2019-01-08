@@ -36,16 +36,20 @@ class Checkout
         }
 
         $db = DatabaseConnection::getInstance();
-        $stmt = $db->prepare('INSERT INTO orders (user_id, address, credit_card_institute, card_name, card_number, card_expmonth, card_expyear, cvv, date) VALUES (:user_id, :address, :ccinst, :ccname, :ccnumber, :ccexpmon, :ccexpyear, :cvv, :date)');
+        if(isset($data['creditCardInstitute'])) {
+            $institute = $data['creditCardInstitute'];
+            $number = $data['cardnumber'];
+            $payment = $institute . " *" . substr($number, -3);
+        } else {
+            $payment = $data['creditCardInstitute'];
+            // additional payment methods could be handled here
+        }
+        
+        $stmt = $db->prepare('INSERT INTO orders (user_id, address, payment_method, date) VALUES (:user_id, :address, :payment, :date)');
         $success = $stmt->execute([
             ':user_id' => $user_id,
             ':address' => $data['address'],
-            ':ccinst' => $data['creditCardInstitute'],
-            ':ccname' => $data['cardname'],
-            ':ccnumber' => $data['cardnumber'],
-            ':ccexpmon' => $data['expmonth'],
-            ':ccexpyear' => $data['expyear'],
-            ':cvv' => $data['cvv'],
+            ':payment' => $payment,
             ':date' => date('y-m-d H:i:s')
         ]);
         if(!$success) {
