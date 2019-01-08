@@ -23,6 +23,11 @@ function getSubmitButtons($step)
 $data = Checkout::getData();
 $user = User::getUserData();
 
+if ($user === null) {
+    FlashMessage::addMessage('You have to be logged in to proceed the checkout!', FlashMessage::SEVERITY_ERROR);
+    Routing::redirect('basket');
+}
+
 if (isset($_POST['submit'])) {
     CSRF::expectValidTokenInRequest();
     if ($_POST['submit'] === 'continue') {
@@ -86,13 +91,13 @@ if (isset($_POST['submit'])) {
 
         } elseif ($data['step'] === Checkout::STEP_CONFIRM) {
             $placeOrder = Checkout::placeOrder();
-            if($placeOrder == null) {
+            if ($placeOrder == null) {
                 FlashMessage::addMessage('Your order has successfully been placed!', FlashMessage::SEVERITY_SUCCESS);
             } else {
                 FlashMessage::addMessage('Your order could not be placed. Error: ' . $placeOrder, FlashMessage::SEVERITY_ERROR);
             }
             Checkout::reset();
-            Routing::redirect('home');                     
+            Routing::redirect('home');
         }
     } elseif ($_POST['submit'] === 'back') {
         if ($data['step'] === 0) {
