@@ -52,6 +52,9 @@ $basketItemCount = count(Item::getBasketItemsForCurrentSession());
                 </li>
                 <?php else : ?>
                     <li class="nav-item">
+                        <a class="nav-link" href="<?= Routing::getUrlToSite('orders'); ?>">My Orders</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="<?= Routing::getUrlToSite('logout'); ?>">Logout</a>
                     </li>
                 <?php endif; ?>

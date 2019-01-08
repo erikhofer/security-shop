@@ -203,5 +203,17 @@ class Item
         }
         return null;
     }
+
+    public static function getName($id) {
+        $db = DatabaseConnection::getInstance();
+        $stmt = $db->prepare('SELECT name FROM products WHERE id = :id LIMIT 1');
+        $success = $stmt->execute([
+            ':id' => $id
+        ]);
+        if($success && $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return $row['name'];
+        }
+        return null;
+    }
 }
 ?>
