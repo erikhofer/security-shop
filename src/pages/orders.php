@@ -29,7 +29,7 @@
                 <dt>Date</dt>
                 <dd><?= $order['date'] ?></dd>
                 <dt>Address</dt>
-                <dd><?= $order['address'] ?></dd>
+                <dd><?= Utils::escapeHtml($order['address']) ?></dd>
                 <dt>Payment Method</dt>
                 <dd><?= $order['payment_method'] ?></dd>
             </dl>
