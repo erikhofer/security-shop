@@ -120,7 +120,7 @@ class Item
             ':id' => $id,
             ':fieldValue' => self::getUserContext()
         ]);
-        if ($sucess) {
+        if ($success) {
             Checkout::reset();
         }
         return $success;

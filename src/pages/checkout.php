@@ -9,7 +9,7 @@ function getSubmitButtons($step)
 {
     ?>
 <button type="submit" name="submit" value="back" class="btn btn-default"><?= $step === 0 ? 'Cancel' : 'Back' ?></button>
-<button type="submit" name="submit" value="continue" class="btn btn-primary">Continue</button>
+<button type="submit" name="submit" value="continue" class="btn btn-primary"><?= $step === 2 ? 'Checkout' : 'Continue' ?></button>
 <?php
 
 }
@@ -143,8 +143,12 @@ $(() => {
     getSubmitButtons($data['step']); ?>
 </form>
 
-<?php elseif ($data['step'] === Checkout::STEP_CONFIRM) : ?>
+<?php elseif ($data['step'] === Checkout::STEP_CONFIRM) :
 
+    $basketItems = Item::getBasketItemsForCurrentSession();
+?>
+
+<form action="<?= Routing::getUrlToSite('checkout'); ?>" method="post">
 <table>
 <h2>Shipping Adress<h2>
 <tr><td></td><td><?= $data['address'] ?></td></tr>
@@ -163,8 +167,27 @@ $(() => {
 <h2>Order</h2>
 <table>
 <tr><th>Product</th><th>Amount</th><th>Price</th></tr>
+<?php
+
+$basketItems = Item::getBasketItemsForCurrentSession();
+
+if (count($basketItems) > 0) :
+    foreach ($basketItems as $item) :
+    echo $item["id"] . ": " . $item["name"] . " (" . $item["quantity"] . ")";
+?>
+    <br/>
+    <form action="<?= Routing::getUrlToSite('basket'); ?>" method="post">
+        <input type="number" class="form-control mr-sm-2" id="amount" value="<?php echo $item["quantity"] ?>" min="1" name="amount" readonly/>
+    </form>
+<?php
+endforeach;
+?>
+<?php 
+endif;
+?>
 </table>
 <?= CSRF::getFormField();
 getSubmitButtons($data['step']); ?>
+</form>
 
 <?php endif; ?>
