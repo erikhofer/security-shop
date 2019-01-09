@@ -16,14 +16,13 @@ $items = Item::getItems();
 <h1>Welcome to the Security Shop!</h1>
 
 <?php for ($i = 0; $i <= (int)(count($items) / 3); $i++) : ?>
-<div class="row">
+<div class="card-deck">
     <?php if ($i == (int)(count($items) / 3)) {
         $max = count($items) % 3;
     } else {
         $max = 3;
     }
     for ($j = 0; $j < $max; $j++) : $item = $items[$i * 3 + $j]; ?>
-    <div class="col-12 col-md-6 col-lg-4">
         <div class="card">
             <img class="card-img-top" src="assets/img/default.jpg" alt="Card image cap">
             <div class="card-body">
@@ -39,7 +38,7 @@ $items = Item::getItems();
                 </form>
             </div>
         </div>
-    </div>
     <?php endfor; ?>
 </div>
+<br>
 <?php endfor; ?>
