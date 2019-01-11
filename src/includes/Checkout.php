@@ -36,8 +36,7 @@ class Checkout
             foreach($items as $item) {
                 $stock = Item::getStock($item['id']);
                 if($stock < $item['quantity']) {
-                    $db->rollBack();
-                    return "Insufficient stock for article: " . $item['name'];
+                    throw new Exception("Insufficient stock for article: " . $item['name']);
                 }
             }
 
@@ -52,21 +51,17 @@ class Checkout
 
 
             $stmt = $db->prepare('INSERT INTO orders (user_id, address, payment_method, date) VALUES (:user_id, :address, :payment, :date)');
-            $success = $stmt->execute([
+            $stmt->execute([
                 ':user_id' => $user_id,
                 ':address' => $data['address'],
                 ':payment' => $payment,
                 ':date' => date('y-m-d H:i:s')
             ]);
-            if(!$success) {
-                $db->rollBack();
-                return "Order could not be placed";
-            }
             $order_id = $db->lastInsertId();
 
             foreach($items as $item) {
                 $stmt = $db->prepare('INSERT INTO order_positions VALUES (:product_id, :quantity, :price, :order_id)');
-                $success = $stmt->execute([
+                $stmt->execute([
                     ':product_id' => $item['id'],
                     ':quantity' => $item['quantity'],
                     ':price' => Item::getPrice($item['id']),
@@ -76,7 +71,7 @@ class Checkout
                 Item::removeFromBasket($item['id']);
 
                 $stmt = $db->prepare('DELETE FROM basket_positions WHERE user_id = :user_id AND product_id = :product_id');
-                $success = $stmt->execute([
+                $stmt->execute([
                     ':user_id' => $_SESSION['user_id'],
                     ':product_id' => $item['id']
                 ]);
@@ -84,6 +79,7 @@ class Checkout
             $db->commit();
         } catch(Exception $e) {
             $db->rollBack();
+            return $e->getMessage();
         }
         return null;
     }
