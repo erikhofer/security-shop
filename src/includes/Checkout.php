@@ -74,6 +74,7 @@ class Checkout
                 ':product_id' => $item['id']
             ]);
         }
+        self::reset();
         return null;
     }
 }
